@@ -3,6 +3,8 @@ package be.oddebit.app;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class App {
 
@@ -17,11 +19,8 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        String[] inputArray = input.split(" ");
-        List<String> inputList = new ArrayList<>(Arrays.asList(inputArray));
-
         System.out.println("Result :");
-        System.out.println(calculate(inputList));
+        System.out.println(calculate(input));
     }
 
     private static void initOperatorsMaps() {
@@ -34,25 +33,27 @@ public class App {
         unaryOperators.put("sqrt", Math::sqrt);
     }
 
-    private static double calculate(List<String> list) {
+    private static double calculate(String expression) {
+
+        String[] array = expression.split(" ");
 
         Stack<Double> pile = new Stack<>();
 
-        for (String s : list) {
+        for (String symbol : array) {
 
-            if (binaryOperators.containsKey(s)) {
-                double n1 = pile.pop();
-                double n2 = pile.pop();
-                double result = binaryOperators.get(s).apply(n1, n2);
+            if (binaryOperators.containsKey(symbol)) {
+                double n = pile.pop();
+                double m = pile.pop();
+                double result = binaryOperators.get(symbol).apply(n, m);
                 pile.push(result);
 
-            } else if (unaryOperators.containsKey(s)) {
+            } else if (unaryOperators.containsKey(symbol)) {
                 double n = pile.pop();
-                double result = unaryOperators.get(s).apply(n);
+                double result = unaryOperators.get(symbol).apply(n);
                 pile.push(result);
 
             } else {
-                pile.push(Double.parseDouble(s));
+                pile.push(Double.parseDouble(symbol));
             }
         }
 
